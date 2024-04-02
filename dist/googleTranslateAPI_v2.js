@@ -81,8 +81,13 @@ exports.translateTextV2 = translateTextV2;
 //         console.log(err);
 //     });
 const getLanguagesV2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const res = yield translate.getLanguages();
-    return res[0];
+    try {
+        const res = yield translate.getLanguages();
+        return res[0];
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 exports.getLanguagesV2 = getLanguagesV2;
 // getLanguagesV2()
