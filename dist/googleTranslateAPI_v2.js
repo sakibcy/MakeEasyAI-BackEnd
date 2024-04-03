@@ -33,7 +33,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLanguagesV2 = exports.translateTextV2 = exports.detectLanguageV2 = void 0;
+exports.getSupportedLanguagesV2 = exports.translateTextV2 = exports.detectLanguageV2 = void 0;
 const v2_1 = require("@google-cloud/translate/build/src/v2");
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
@@ -80,7 +80,7 @@ exports.translateTextV2 = translateTextV2;
 //     .catch((err) => {
 //         console.log(err);
 //     });
-const getLanguagesV2 = () => __awaiter(void 0, void 0, void 0, function* () {
+const getSupportedLanguagesV2 = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const res = yield translate.getLanguages();
         return res[0];
@@ -89,7 +89,7 @@ const getLanguagesV2 = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log(error);
     }
 });
-exports.getLanguagesV2 = getLanguagesV2;
+exports.getSupportedLanguagesV2 = getSupportedLanguagesV2;
 // getLanguagesV2()
 // .then((res) => {
 //     console.log(res);

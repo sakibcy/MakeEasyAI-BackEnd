@@ -48,7 +48,7 @@ export const translateTextV2 = async (text: any, targetLanguage: any) => {
 //         console.log(err);
 //     });
 
-export const getLanguagesV2 = async () => {
+export const getSupportedLanguagesV2 = async () => {
     try {
         const res = await translate.getLanguages();
         return res[0];
