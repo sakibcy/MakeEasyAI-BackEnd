@@ -25,7 +25,7 @@ interface TranslateTextV3 {
   contents: [];
   targetLanguageCode: string;
 }
-app.post("/api/v3/translateText", async (req: Request, res: Response) => {
+app.post("/api/v3/translate_text", async (req: Request, res: Response) => {
   const targetLanguageCode = req.body.targetLanguageCode;
   const contents = req.body.contents;
 

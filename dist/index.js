@@ -29,7 +29,7 @@ app.get("/api/v3/languages", (req, res) => __awaiter(void 0, void 0, void 0, fun
     const lang = yield (0, googleTranslateAPI_v3_1.getSupportedLanguagesV3)();
     res.send(lang);
 }));
-app.post("/api/v3/translateText", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/api/v3/translate_text", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const targetLanguageCode = req.body.targetLanguageCode;
     const contents = req.body.contents;
     if (contents[0].length > 30000) {
