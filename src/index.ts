@@ -12,7 +12,7 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Testing 8:01pm")
+  res.send("Testing 8:10pm")
 })
 
 app.get("/api/v2/languages", async (req: Request, res: Response) => {
