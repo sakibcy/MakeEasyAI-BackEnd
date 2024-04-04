@@ -22,7 +22,7 @@ const port = process.env.PORT || 3000;
 app.use(express_1.default.json()); // for parsing application/json
 app.use(express_1.default.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.get("/", (req, res) => {
-    res.send("Testing");
+    res.send("Testing 8:01pm");
 });
 app.get("/api/v2/languages", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = yield (0, googleTranslateAPI_v2_1.getSupportedLanguagesV2)();
