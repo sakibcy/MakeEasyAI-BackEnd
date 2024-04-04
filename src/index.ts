@@ -11,6 +11,10 @@ const port = process.env.PORT || 3000;
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
+app.get("/", (req: Request, res: Response) => {
+  res.send("Testing")
+})
+
 app.get("/api/v2/languages", async (req: Request, res: Response) => {
   const lang = await getSupportedLanguagesV2();
   res.send(lang)
