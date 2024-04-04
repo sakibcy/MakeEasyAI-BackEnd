@@ -28,4 +28,4 @@ jobs:
 
     - name: Deploy to VM
       run: |
-        gcloud compute ssh sakibal623@instance-20240404-072605 --zone=us-central1-a --command="sudo bash ~/deploy.sh"
+        gcloud compute ssh sakibal623@instance-20240404-072605 --zone=us-central1-a --command="bash ~/deploy.sh"
