@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const googleTranslateAPI_v2_1 = require("./googleTranslateAPI_v2");
-const googleTranslateAPI_v3_1 = require("./googleTranslateAPI_v3");
+const googleTranslateAPI_v2_1 = require("./apis/googleTranslateAPI_v2");
+const googleTranslateAPI_v3_1 = require("./apis/googleTranslateAPI_v3");
+const summarizerGoogleAI_1 = require("./apis/summarizerGoogleAI");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -31,6 +32,19 @@ app.get("/api/v2/languages", (req, res) => __awaiter(void 0, void 0, void 0, fun
 app.get("/api/v3/languages", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const lang = yield (0, googleTranslateAPI_v3_1.getSupportedLanguagesV3)();
     res.send(lang);
+}));
+app.post("/api/summarizer", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const text = req.body.text;
+    try {
+        const result = yield (0, summarizerGoogleAI_1.summarizerGoogleAPI)(text);
+        if (result) {
+            let ans = result;
+            res.send(ans.candidates[0].content.parts[0].text);
+        }
+    }
+    catch (err) {
+        console.log(err);
+    }
 }));
 app.post("/api/v3/translate_text", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const targetLanguageCode = req.body.targetLanguageCode;

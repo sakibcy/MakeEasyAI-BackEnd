@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "type": "commonjs",
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
@@ -12,7 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/aiplatform": "^3.18.0",
     "@google-cloud/translate": "^8.1.0",
+    "@google-cloud/vertexai": "^1.0.0",
     "concurrently": "^8.2.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
