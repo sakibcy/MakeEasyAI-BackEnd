@@ -16,15 +16,8 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Testing 8:10pm")
 })
 
-app.get("/api/v2/languages", async (req: Request, res: Response) => {
-    const lang = await getSupportedLanguagesV2();
-    res.send(lang)
-});
+require('./startup/routes')(app);
 
-app.get("/api/v3/languages", async (req: Request, res: Response) => {
-    const lang = await getSupportedLanguagesV3();
-    res.send(lang)
-});
 
 app.post("/api/summarizer", async (req: Request, res: Response) => {
     const text = req.body.text;
@@ -38,11 +31,6 @@ app.post("/api/summarizer", async (req: Request, res: Response) => {
         console.log(err)
     }
 })
-
-interface TranslateTextV3 {
-    contents: [];
-    targetLanguageCode: string;
-}
 
 app.post("/api/v3/translate_text", async (req: Request, res: Response) => {
     const targetLanguageCode = req.body.targetLanguageCode;

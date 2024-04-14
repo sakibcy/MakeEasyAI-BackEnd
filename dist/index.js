@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const googleTranslateAPI_v2_1 = require("./apis/googleTranslateAPI_v2");
 const googleTranslateAPI_v3_1 = require("./apis/googleTranslateAPI_v3");
 const summarizerGoogleAI_1 = require("./apis/summarizerGoogleAI");
 dotenv_1.default.config();
@@ -25,14 +24,7 @@ app.use(express_1.default.urlencoded({ extended: true })); // for parsing applic
 app.get("/", (req, res) => {
     res.send("Testing 8:10pm");
 });
-app.get("/api/v2/languages", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const lang = yield (0, googleTranslateAPI_v2_1.getSupportedLanguagesV2)();
-    res.send(lang);
-}));
-app.get("/api/v3/languages", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const lang = yield (0, googleTranslateAPI_v3_1.getSupportedLanguagesV3)();
-    res.send(lang);
-}));
+require('./startup/routes')(app);
 app.post("/api/summarizer", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const text = req.body.text;
     try {
