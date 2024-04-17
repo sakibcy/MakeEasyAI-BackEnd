@@ -8,4 +8,4 @@ router.get("/", async (req: Request, res: Response) => {
     res.send(lang)
 });
 
-module .exports = router;
+export default router;

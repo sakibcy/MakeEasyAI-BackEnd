@@ -1,54 +1,12 @@
 import express, {Express, Request, Response} from "express";
 import dotenv from "dotenv";
-import {getSupportedLanguagesV2} from "./apis/googleTranslateAPI_v2";
-import {callTranslateText_V3, getSupportedLanguagesV3} from "./apis/googleTranslateAPI_v3";
-import {summarizerGoogleAPI} from "./apis/summarizerGoogleAI";
-
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
-
-app.get("/", (req: Request, res: Response) => {
-    res.send("Testing 8:10pm")
-})
 
 require('./startup/routes')(app);
 
-
-app.post("/api/summarizer", async (req: Request, res: Response) => {
-    const text = req.body.text;
-    try {
-        const result = await summarizerGoogleAPI(text);
-        if (result) {
-            let ans = result;
-            res.send(ans.candidates[0].content.parts[0].text);
-        }
-    } catch (err) {
-        console.log(err)
-    }
-})
-
-app.post("/api/v3/translate_text", async (req: Request, res: Response) => {
-    const targetLanguageCode = req.body.targetLanguageCode;
-    const contents = req.body.contents;
-
-    if (contents[0].length > 30000) {
-        res.send("Content length must be less than 30,000 character, If you need to translate text exceeding 30,000 then use 'BatchTranslateText' ")
-    }
-
-    try {
-        const lang = await callTranslateText_V3(contents, targetLanguageCode);
-        res.send(lang)
-    } catch (error) {
-        console.log(error);
-        res.send('The is an error sending request, please make sure everything is correct or check your internet connection')
-    }
-});
-
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);
 });

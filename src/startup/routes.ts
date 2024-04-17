@@ -1,12 +1,20 @@
 import { NextHandleFunction } from "connect";
 import express from "express";
 
-const v2_languages = require("../routes/v2_languages");
-const v3_languages = require("../routes/v3_languages");
+import v2_languages from "../routes/v2_languages";
+import v3_languages from "../routes/v3_languages";
+import summarizer from "../routes/summarizer";
+import v3_translate from "../routes/v3_translate";
+import entry from "../routes/entry";
 
 module.exports = function (app: any) {
     // @ts-ignore
-    app.use(express.json())
+    app.use(express.json()) // for parsing application/json
+    app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+
+    app.use('/', entry);
     app.use('/api/v2/languages', v2_languages);
     app.use('/api/v3/languages', v3_languages);
+    app.use('/api/summarizer', summarizer);
+    app.use('/api/v3/translate_text', v3_translate);
 }
