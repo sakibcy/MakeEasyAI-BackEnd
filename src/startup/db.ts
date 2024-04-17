@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/client'
 
 const prisma = new PrismaClient()
 
 export  default async function db() {
-    const user = await prisma.user.create({ data: { name: 'DEMO', email: 'demo4@prisma.com'}})
+    const user = await prisma.user.create({ data: { name: 'DEMO', email: 'demo5@prisma.com'}})
     console.log(user)
     console.log(user)
     const allUsers = await prisma.user.findMany()

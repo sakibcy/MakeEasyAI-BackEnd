@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const client_1 = require("@prisma/client");
+const client_1 = require("./generated/client");
 const prisma = new client_1.PrismaClient();
 const db_1 = __importDefault(require("./startup/db"));
 dotenv_1.default.config();
