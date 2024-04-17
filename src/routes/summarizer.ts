@@ -9,8 +9,9 @@ router.post("/", async (req: Request, res: Response) => {
     try {
         const result = await summarizerGoogleAPI(text);
         if (result) {
-            let ans = result;
-            res.send(ans.candidates[0].content.parts[0].text);
+            // let ans = result;
+            // res.send(ans.candidates[0].content.parts[0].text);
+            res.send(result);
         }
     } catch (err) {
         console.log(err)
