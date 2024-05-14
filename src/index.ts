@@ -1,11 +1,8 @@
 import express, {Express} from "express";
 // @ts-ignore
 import dotenv from "dotenv";
-import {startDB} from "./startup/db";
 
 dotenv.config();
-
-startDB();
 
 const app: Express = express();
 
