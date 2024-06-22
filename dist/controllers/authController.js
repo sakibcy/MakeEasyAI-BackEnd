@@ -3,10 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.login_post = exports.signup_post = void 0;
 const client_1 = require("../../node_modules/.prisma/client");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 const prisma = new client_1.PrismaClient();
 const signup_post = async (req, res) => {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
+    const salt = await bcrypt.genSalt();
     if (!isEmail) {
         res.status(400).json({
             "status": {
@@ -28,9 +30,10 @@ const signup_post = async (req, res) => {
         });
     }
     else {
+        const password = await bcrypt.hash(req.body.password, salt);
         const data = {
             email: req.body.email,
-            password: req.body.password
+            password
         };
         const user = await prisma.users.findUnique({
             where: {
@@ -63,6 +66,57 @@ const signup_post = async (req, res) => {
     }
 };
 exports.signup_post = signup_post;
+// another way to singup_post using try catch block
+// export const signup_post = async (req: any, res: any) => {
+//     const isEmail = validator.isEmail(req.body.email);
+//     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
+//     if (!isEmail) {
+//         res.status(400).json({
+//             "status": {
+//                 error: true,
+//                 code: 400,
+//                 type: "Bad Request",
+//                 message: "Email is not valid"
+//             }
+//         });
+//     } else if (!isLength) {
+//         res.status(400).json({
+//             "status": {
+//                 error: true,
+//                 code: 400,
+//                 type: "Bad Request",
+//                 message: "Password should be at least 6 characters"
+//             }
+//         });
+//     } else {
+//         const data = {
+//             email: req.body.email,
+//             password: req.body.password
+//         };
+//         try {
+//             const user = await prisma.users.create({ data });
+//             res.status(201).json({
+//                 "status": {
+//                     error: false,
+//                     code: 201,
+//                     type: "success",
+//                     message: "User created successfully"
+//                 }
+//             });
+//         } catch (error) {
+//             console.log(error);
+//             handleError(error);
+//             res.status(400).json({
+//                 "status": {
+//                     error: true,
+//                     code: 400,
+//                     type: "Bad Request",
+//                     message: "User not created"
+//                 }
+//             })
+//         }
+//     }
+// }
 async function login_post(req, res) {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
@@ -116,3 +170,7 @@ async function login_post(req, res) {
     }
 }
 exports.login_post = login_post;
+function handleError(error) {
+    // throw new Error("Function not implemented.");
+    console.log("Handling error" + error.message + ": errror message" + error.code);
+}
