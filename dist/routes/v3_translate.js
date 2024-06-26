@@ -5,8 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const googleTranslateAPI_v3_1 = require("../apis/googleTranslateAPI_v3");
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware_1.requireAuth, async (req, res) => {
     const targetLanguageCode = req.body.targetLanguageCode;
     const contents = req.body.contents;
     if (contents[0].length > 30000) {

@@ -1,9 +1,10 @@
-import express, {Request, Response} from "express";
-import {callTranslateText_V3} from "../apis/googleTranslateAPI_v3";
+import express, { Request, Response } from "express";
+import { callTranslateText_V3 } from "../apis/googleTranslateAPI_v3";
+import { requireAuth } from "../middleware/authMiddleware"
 
 const router = express.Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", requireAuth, async (req: Request, res: Response) => {
     const targetLanguageCode = req.body.targetLanguageCode;
     const contents = req.body.contents;
 

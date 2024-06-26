@@ -9,6 +9,7 @@ import summarizer from "../routes/summarizer";
 import v3_translate from "../routes/v3_translate";
 import entry from "../routes/entry";
 import authRoutes from "../routes/authRoutes";
+import { requireAuth } from "../middleware/authMiddleware";
 
 module.exports = function (app: any) {
     // @ts-ignore
