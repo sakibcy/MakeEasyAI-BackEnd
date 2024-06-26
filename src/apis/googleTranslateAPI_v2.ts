@@ -1,9 +1,8 @@
 import { Translate } from '@google-cloud/translate/build/src/v2';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { CREDENTIALS_G } from '../config';
 
 // Your credentials
-const CREDENTIALS: any = JSON.parse(`${process.env.CREDENTIALS?.toString()}`);
+const CREDENTIALS: any = JSON.parse(`${CREDENTIALS_G?.toString()}`);
 
 // Configuration for the client
 const translate = new Translate({
@@ -54,7 +53,7 @@ export const getSupportedLanguagesV2 = async () => {
         return res[0];
     } catch (error) {
         console.log(error);
-        
+
     }
 }
 

@@ -57,11 +57,10 @@
 
 // Imports the Translation library
 const { TranslationServiceClient } = require('@google-cloud/translate').v3;
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { CREDENTIALS_G } from '../config';
 
 // Your credentials
-const CREDENTIALS: any = JSON.parse(`${process.env.CREDENTIALS?.toString()}`);
+const CREDENTIALS: any = JSON.parse(`${CREDENTIALS_G?.toString()}`);
 
 // Instantiates a client
 const translationClient = new TranslationServiceClient({
