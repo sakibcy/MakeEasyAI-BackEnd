@@ -1,5 +1,7 @@
 import { NextHandleFunction } from "connect";
 import express from "express";
+var cookieParser = require('cookie-parser')
+
 
 import v2_languages from "../routes/v2_languages";
 import v3_languages from "../routes/v3_languages";
@@ -12,6 +14,7 @@ module.exports = function (app: any) {
     // @ts-ignore
     app.use(express.json()) // for parsing application/json
     app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
+    app.use(cookieParser());
 
     app.use('/', entry);
     app.use('/api/v2/languages', v2_languages);

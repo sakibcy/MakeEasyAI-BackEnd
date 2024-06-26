@@ -1,10 +1,20 @@
 import { PrismaClient } from "../../node_modules/.prisma/client";
-const validator = require("validator");
-const bcrypt = require("bcrypt");
+import validator from "validator";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
-export const signup_post = async (req: any, res: any) => {
+const maxAge = 3 * 24 * 60 * 60; // 3 days
+
+const createToken = (id: any) => {
+    return jwt.sign({ id }, 'the secret stored in env', {
+        expiresIn: maxAge
+    });
+}
+
+export const signup_post = async (req: Request, res: Response) => {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
@@ -54,6 +64,9 @@ export const signup_post = async (req: any, res: any) => {
         } else {
             const user = await prisma.users.create({ data });
             if (user) {
+                const token = createToken(user.id);
+                res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+
                 res.status(201).json({
                     "status": {
                         error: false,
@@ -112,7 +125,7 @@ export const signup_post = async (req: any, res: any) => {
 //         } catch (error) {
 //             console.log(error);
 //             handleError(error);
-            
+
 //             res.status(400).json({
 //                 "status": {
 //                     error: true,
@@ -125,7 +138,7 @@ export const signup_post = async (req: any, res: any) => {
 //     }
 // }
 
-export async function login_post(req: any, res: any) {
+export async function login_post(req: Request, res: Response) {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
@@ -150,12 +163,14 @@ export async function login_post(req: any, res: any) {
     } else {
         const user = await prisma.users.findUnique({
             where: {
-                email: req.body.email,
-                password: req.body.password
+                email: req.body.email
             }
         })
 
-        if (user) {
+        if (user && bcrypt.compareSync(req.body.password, user.password)) {
+            const token = createToken(user.id);
+            res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+
             res.json({
                 "status": {
                     error: false,
@@ -180,5 +195,5 @@ export async function login_post(req: any, res: any) {
 function handleError(error: any) {
     // throw new Error("Function not implemented.");
     console.log("Handling error" + error.message + ": errror message" + error.code);
-    
+
 }

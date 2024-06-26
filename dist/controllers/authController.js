@@ -1,14 +1,24 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login_post = exports.signup_post = void 0;
 const client_1 = require("../../node_modules/.prisma/client");
-const validator = require("validator");
-const bcrypt = require("bcrypt");
+const validator_1 = __importDefault(require("validator"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const prisma = new client_1.PrismaClient();
+const maxAge = 3 * 24 * 60 * 60; // 3 days
+const createToken = (id) => {
+    return jsonwebtoken_1.default.sign({ id }, 'the secret stored in env', {
+        expiresIn: maxAge
+    });
+};
 const signup_post = async (req, res) => {
-    const isEmail = validator.isEmail(req.body.email);
-    const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
-    const salt = await bcrypt.genSalt();
+    const isEmail = validator_1.default.isEmail(req.body.email);
+    const isLength = validator_1.default.isLength(req.body.password, { min: 6, max: undefined });
+    const salt = await bcrypt_1.default.genSalt();
     if (!isEmail) {
         res.status(400).json({
             "status": {
@@ -30,7 +40,7 @@ const signup_post = async (req, res) => {
         });
     }
     else {
-        const password = await bcrypt.hash(req.body.password, salt);
+        const password = await bcrypt_1.default.hash(req.body.password, salt);
         const data = {
             email: req.body.email,
             password
@@ -53,6 +63,8 @@ const signup_post = async (req, res) => {
         else {
             const user = await prisma.users.create({ data });
             if (user) {
+                const token = createToken(user.id);
+                res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
                 res.status(201).json({
                     "status": {
                         error: false,
@@ -118,8 +130,8 @@ exports.signup_post = signup_post;
 //     }
 // }
 async function login_post(req, res) {
-    const isEmail = validator.isEmail(req.body.email);
-    const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
+    const isEmail = validator_1.default.isEmail(req.body.email);
+    const isLength = validator_1.default.isLength(req.body.password, { min: 6, max: undefined });
     if (!isEmail) {
         res.status(400).json({
             "status": {
@@ -143,11 +155,12 @@ async function login_post(req, res) {
     else {
         const user = await prisma.users.findUnique({
             where: {
-                email: req.body.email,
-                password: req.body.password
+                email: req.body.email
             }
         });
-        if (user) {
+        if (user && bcrypt_1.default.compareSync(req.body.password, user.password)) {
+            const token = createToken(user.id);
+            res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
             res.json({
                 "status": {
                     error: false,
