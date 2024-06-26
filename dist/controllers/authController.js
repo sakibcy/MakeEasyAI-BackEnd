@@ -8,6 +8,7 @@ const client_1 = require("../../node_modules/.prisma/client");
 const validator_1 = __importDefault(require("validator"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const generateResponse_1 = require("../utils/generateResponse");
 const prisma = new client_1.PrismaClient();
 const maxAge = 3 * 24 * 60 * 60; // 3 days
 const createToken = (id) => {
@@ -20,24 +21,14 @@ const signup_post = async (req, res) => {
     const isLength = validator_1.default.isLength(req.body.password, { min: 6, max: undefined });
     const salt = await bcrypt_1.default.genSalt();
     if (!isEmail) {
-        res.status(400).json({
-            "status": {
-                error: true,
-                code: 400,
-                type: "Bad Request",
-                message: "Email is not valid"
-            }
-        });
+        res
+            .status(400)
+            .json((0, generateResponse_1.generateResponse)(true, 400, "Bad Request", "Email is not valid"));
     }
     else if (!isLength) {
-        res.status(400).json({
-            "status": {
-                error: true,
-                code: 400,
-                type: "Bad Request",
-                message: "Password should be at least 6 characters"
-            }
-        });
+        res
+            .status(400)
+            .json((0, generateResponse_1.generateResponse)(true, 400, "Bad Request", "Password should be at least 6 characters"));
     }
     else {
         const password = await bcrypt_1.default.hash(req.body.password, salt);
@@ -51,106 +42,35 @@ const signup_post = async (req, res) => {
             }
         });
         if (user) {
-            res.json({
-                "status": {
-                    error: true,
-                    code: 401,
-                    type: "Unauthorized",
-                    message: "User already exists"
-                }
-            });
+            res
+                .status(401)
+                .json((0, generateResponse_1.generateResponse)(true, 401, "Unauthorized", "User already exists"));
         }
         else {
             const user = await prisma.users.create({ data });
             if (user) {
                 const token = createToken(user.id);
                 res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-                res.status(201).json({
-                    "status": {
-                        error: false,
-                        code: 201,
-                        type: "success",
-                        message: "User created successfully"
-                    }
-                });
+                res
+                    .status(201)
+                    .json((0, generateResponse_1.generateResponse)(false, 201, "Success", "User created successfully"));
             }
         }
     }
 };
 exports.signup_post = signup_post;
-// another way to singup_post using try catch block
-// export const signup_post = async (req: any, res: any) => {
-//     const isEmail = validator.isEmail(req.body.email);
-//     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
-//     if (!isEmail) {
-//         res.status(400).json({
-//             "status": {
-//                 error: true,
-//                 code: 400,
-//                 type: "Bad Request",
-//                 message: "Email is not valid"
-//             }
-//         });
-//     } else if (!isLength) {
-//         res.status(400).json({
-//             "status": {
-//                 error: true,
-//                 code: 400,
-//                 type: "Bad Request",
-//                 message: "Password should be at least 6 characters"
-//             }
-//         });
-//     } else {
-//         const data = {
-//             email: req.body.email,
-//             password: req.body.password
-//         };
-//         try {
-//             const user = await prisma.users.create({ data });
-//             res.status(201).json({
-//                 "status": {
-//                     error: false,
-//                     code: 201,
-//                     type: "success",
-//                     message: "User created successfully"
-//                 }
-//             });
-//         } catch (error) {
-//             console.log(error);
-//             handleError(error);
-//             res.status(400).json({
-//                 "status": {
-//                     error: true,
-//                     code: 400,
-//                     type: "Bad Request",
-//                     message: "User not created"
-//                 }
-//             })
-//         }
-//     }
-// }
 async function login_post(req, res) {
     const isEmail = validator_1.default.isEmail(req.body.email);
     const isLength = validator_1.default.isLength(req.body.password, { min: 6, max: undefined });
     if (!isEmail) {
-        res.status(400).json({
-            "status": {
-                error: true,
-                code: 400,
-                type: "Bad Request",
-                message: "Email is not valid"
-            }
-        });
+        res
+            .status(400)
+            .json((0, generateResponse_1.generateResponse)(true, 400, "Bad Request", "Email is not valid"));
     }
     else if (!isLength) {
-        res.status(400).json({
-            "status": {
-                error: true,
-                code: 400,
-                type: "Bad Request",
-                message: "Password should be at least 6 characters"
-            }
-        });
+        res
+            .status(400)
+            .json((0, generateResponse_1.generateResponse)(true, 400, "Bad Request", "Password should be at least 6 characters"));
     }
     else {
         const user = await prisma.users.findUnique({
@@ -161,24 +81,14 @@ async function login_post(req, res) {
         if (user && bcrypt_1.default.compareSync(req.body.password, user.password)) {
             const token = createToken(user.id);
             res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-            res.json({
-                "status": {
-                    error: false,
-                    code: 200,
-                    type: "success",
-                    message: "User logged in successfully"
-                }
-            });
+            res
+                .status(200)
+                .json((0, generateResponse_1.generateResponse)(false, 200, "Success", "User logged in successfully"));
         }
         else {
-            res.status(401).json({
-                "status": {
-                    error: true,
-                    code: 401,
-                    type: "Unauthorized",
-                    message: "Authentication Failure User not registered or check your Email and Password"
-                }
-            });
+            res
+                .status(401)
+                .json((0, generateResponse_1.generateResponse)(true, 401, "Unauthorized", "Authentication Failure User not registered or check your Email and Password"));
         }
     }
 }
