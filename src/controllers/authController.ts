@@ -23,11 +23,11 @@ export const signup_post = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(SALT_ROUND_DB);
 
     if (!isEmail) {
-        res.status(400).json(generateResponse(
+        return res.status(400).json(generateResponse(
             true, 400, "Bad Request", "Email is not valid"
         ));
     } else if (!isLength) {
-        res.status(400).json(generateResponse(
+        return res.status(400).json(generateResponse(
             true, 400, "Bad Request", "Password should be at least 6 characters"
         ));
     } else {
@@ -45,7 +45,7 @@ export const signup_post = async (req: Request, res: Response) => {
         });
 
         if (user) {
-            res.status(401).json(generateResponse(
+            return res.status(401).json(generateResponse(
                 true, 401, "Unauthorized", "User already exists"
             ));
         } else {
@@ -54,7 +54,7 @@ export const signup_post = async (req: Request, res: Response) => {
                 const token = createToken(user.id);
                 res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-                res.status(201).json(generateResponse(
+                return res.status(201).json(generateResponse(
                     false, 201, "Success", "User created successfully"
                 ));
             }
@@ -67,11 +67,11 @@ export async function login_post(req: Request, res: Response) {
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
     if (!isEmail) {
-        res.status(400).json(generateResponse(
+        return res.status(400).json(generateResponse(
             true, 400, "Bad Request", "Email is not valid"
         ));
     } else if (!isLength) {
-        res.status(400).json(generateResponse(
+        return res.status(400).json(generateResponse(
             true, 400, "Bad Request", "Password should be at least 6 characters"
         ));
     } else {
@@ -85,11 +85,11 @@ export async function login_post(req: Request, res: Response) {
             const token = createToken(user.id);
             res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-            res.status(200).json(generateResponse(
+            return res.status(200).json(generateResponse(
                 false, 200, "Success", "User logged in successfully"
             ));
         } else {
-            res.status(401).json(generateResponse(
+            return res.status(401).json(generateResponse(
                 true, 401, "Unauthorized", "Authentication Failure User not registered or check your Email and Password"
             ));
         }
