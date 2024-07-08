@@ -16,7 +16,7 @@ const createToken = (id: any) => {
     });
 }
 
-export const signup_post = async (req: Request, res: Response) => {
+export const signupPost = async (req: Request, res: Response) => {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
@@ -62,7 +62,7 @@ export const signup_post = async (req: Request, res: Response) => {
     }
 }
 
-export async function login_post(req: Request, res: Response) {
+export async function loginPost(req: Request, res: Response) {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
