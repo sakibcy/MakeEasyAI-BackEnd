@@ -18,7 +18,6 @@ module.exports = function (app: any) {
     app.use(express.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
     app.use(cookieParser());
 
-    app.use('/', entry);
     app.use(`/${API_VERSION}/languagesv2`, v2_languages);
     app.use(`/${API_VERSION}/languages`, v3_languages);
     app.use(`/${API_VERSION}/summarizer`, summarizer);
