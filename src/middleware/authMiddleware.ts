@@ -8,7 +8,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
 
     const token = tokenFromHeader || tokenFromCookie;
     if (!token) {
-        res.status(401).json(generateResponse(
+        return res.status(401).json(generateResponse(
             true, 401, "Unauthorized", "You are not authorized to access this"
         ));
     }
@@ -17,7 +17,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
         const decoded = jwt.verify(token, 'the secret stored in env')
         next();
     } catch (error) {
-        res.status(403).json(generateResponse(
+        res.status(401).json(generateResponse(
             true, 401, "Unauthorized", "You are not authorized to access this"
         ));
     }
