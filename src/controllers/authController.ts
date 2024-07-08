@@ -4,11 +4,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { generateResponse } from "../utils/generateResponse";
+import { JWT_TOKEN_NAME, SALT_ROUND_DB } from "../config";
 
 const prisma = new PrismaClient();
 
 const maxAge = 3 * 24 * 60 * 60; // 3 days
-const tokenName = 'x-auth-token';
 
 const createToken = (id: any) => {
     return jwt.sign({ id }, 'the secret stored in env', {
@@ -20,7 +20,7 @@ export const signup_post = async (req: Request, res: Response) => {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
-    const salt = await bcrypt.genSalt();
+    const salt = await bcrypt.genSalt(SALT_ROUND_DB);
 
     if (!isEmail) {
         res.status(400).json(generateResponse(
@@ -52,7 +52,7 @@ export const signup_post = async (req: Request, res: Response) => {
             const user = await prisma.users.create({ data });
             if (user) {
                 const token = createToken(user.id);
-                res.setHeader(tokenName, token).cookie(tokenName, token, { httpOnly: true, maxAge: maxAge * 1000 });
+                res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
 
                 res.status(201).json(generateResponse(
                     false, 201, "Success", "User created successfully"
@@ -83,7 +83,7 @@ export async function login_post(req: Request, res: Response) {
 
         if (user && bcrypt.compareSync(req.body.password, user.password)) {
             const token = createToken(user.id);
-            res.setHeader(tokenName, token).cookie(tokenName, token, { httpOnly: true, maxAge: maxAge * 1000 });
+            res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
 
             res.status(200).json(generateResponse(
                 false, 200, "Success", "User logged in successfully"
