@@ -10,6 +10,7 @@ import v3_translate from "../routes/v3_translate";
 import entry from "../routes/entry";
 import authRoutes from "../routes/authRoutes";
 import { requireAuth } from "../middleware/authMiddleware";
+import { API_VERSION } from "../config";
 
 module.exports = function (app: any) {
     // @ts-ignore
@@ -18,9 +19,9 @@ module.exports = function (app: any) {
     app.use(cookieParser());
 
     app.use('/', entry);
-    app.use('/api/v2/languages', v2_languages);
-    app.use('/api/v3/languages', v3_languages);
-    app.use('/api/summarizer', summarizer);
-    app.use('/api/v3/translate_text', v3_translate);
-    app.use(`/`, authRoutes);
+    app.use(`/${API_VERSION}/languagesv2`, v2_languages);
+    app.use(`/${API_VERSION}/languages`, v3_languages);
+    app.use(`/${API_VERSION}/summarizer`, summarizer);
+    app.use(`/${API_VERSION}/translate_text`, v3_translate);
+    app.use(`/${API_VERSION}/`, authRoutes);
 }
