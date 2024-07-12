@@ -20,5 +20,5 @@ module.exports = function (app: any) {
     app.use(`/${API_VERSION}/languages`, v3_languages);
     app.use(`/${API_VERSION}/summarizer`, summarizer);
     app.use(`/${API_VERSION}/translate_text`, v3_translate);
-    app.use(`/${API_VERSION}/`, authRoutes);
+    app.use(`/`, authRoutes);
 }
