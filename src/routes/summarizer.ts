@@ -1,10 +1,11 @@
 import express, {Request, Response} from "express";
 import {getSupportedLanguagesV2} from "../apis/googleTranslateAPI_v2";
 import {summarizerGoogleAPI} from "../apis/summarizerGoogleAI";
+import { requireAuth } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", requireAuth, async (req: Request, res: Response) => {
     const text = req.body.text;
     try {
         const result = await summarizerGoogleAPI(text);
