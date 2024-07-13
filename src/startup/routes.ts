@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Application } from "express";
 
 import v2_languages from "../routes/v2_languages";
 import v3_languages from "../routes/v3_languages";
@@ -6,8 +6,9 @@ import summarizer from "../routes/summarizer";
 import v3_translate from "../routes/v3_translate";
 import authRoutes from "../routes/authRoutes";
 import { API_VERSION } from "../config";
+import authenticated from '../routes/authenticated';
 
-module.exports = function (app: any) {
+module.exports = function (app: Application) {
     const middleware = [
         express.json(),
         express.urlencoded({extended: true}),
@@ -21,4 +22,5 @@ module.exports = function (app: any) {
     app.use(`/${API_VERSION}/summarizer`, summarizer);
     app.use(`/${API_VERSION}/translate_text`, v3_translate);
     app.use(`/`, authRoutes);
+    app.use(`/authenticated`, authenticated);
 }

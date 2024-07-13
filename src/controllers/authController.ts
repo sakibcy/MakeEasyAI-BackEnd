@@ -66,34 +66,29 @@ export async function loginPost(req: Request, res: Response) {
     const isEmail = validator.isEmail(req.body.email);
     const isLength = validator.isLength(req.body.password, { min: 6, max: undefined });
 
-    if (!isEmail) {
-        return res.status(400).json(generateResponse(
-            true, 400, "Bad Request", "Email is not valid"
+    const user = await prisma.users.findUnique({
+        where: {
+            email: req.body.email
+        }
+    })
+
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+        const token = createToken(user.id);
+        res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+        return res.status(200).json(generateResponse(
+            false, 200, "Success", "User logged in successfully"
         ));
-    } else if (!isLength) {
-        return res.status(400).json(generateResponse(
-            true, 400, "Bad Request", "Password should be at least 6 characters"
+    } else if (user && !bcrypt.compareSync(req.body.password, user.password)) {
+        return res.status(401).json(generateResponse(
+            true, 401, "Unauthorized", "Password is incorrect"
         ));
     } else {
-        const user = await prisma.users.findUnique({
-            where: {
-                email: req.body.email
-            }
-        })
-
-        if (user && bcrypt.compareSync(req.body.password, user.password)) {
-            const token = createToken(user.id);
-            res.setHeader(JWT_TOKEN_NAME, token).cookie(JWT_TOKEN_NAME, token, { httpOnly: true, maxAge: maxAge * 1000 });
-
-            return res.status(200).json(generateResponse(
-                false, 200, "Success", "User logged in successfully"
-            ));
-        } else {
-            return res.status(401).json(generateResponse(
-                true, 401, "Unauthorized", "Authentication Failure User not registered or check your Email and Password"
-            ));
-        }
+        return res.status(401).json(generateResponse(
+            true, 401, "Unauthorized", "Email is invalid"
+        ));
     }
+
 }
 
 function handleError(error: any) {
