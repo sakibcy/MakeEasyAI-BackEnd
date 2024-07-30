@@ -14,6 +14,12 @@
 
 #### Technology: Express, TypeScript, Prisma ORM, PostgreSQL, JWT, Google Cloud Translate API, Gemini AI
 
+<div align='center'>
+
+![Technology](https://skillicons.dev/icons?i=express,nodejs,typescript,prisma,postgres,gcp)
+
+</div>
+
 <br /><div align='center'>
 
 ## [See The Browser Extension of this Backend](https://github.com/sakibcy/MakeEasyAI-Extension)
